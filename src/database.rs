@@ -43,14 +43,3 @@ pub async fn get_user(username: String, db:PostgresDbConn) -> Option<User> {
         Some(user)
     }).await
 }
-
-// fn get_rows(db: PostgresDbConn) -> Vec<Row> {
-//     let rows = vec![];
-//
-//     db.run(|mut client: postgres::Client| {
-//         match client.query("SELECT id FROM users") {
-//             Ok(rows) => rows,
-//             Err(_) => vec![]
-//         }
-//     });
-// }
