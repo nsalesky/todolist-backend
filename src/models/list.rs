@@ -1,7 +1,7 @@
 use chrono::{NaiveDate, Utc};
 use diesel::prelude::*;
 
-use crate::schema::lists::*;
+use crate::schema::lists;
 use crate::schema::lists::dsl::*;
 
 /// An object representing a full row in the lists table.
@@ -24,6 +24,7 @@ pub struct NewList {
 }
 
 /// An object with the information the user needs to provide to create a new list.
+#[derive(Serialize, Deserialize)]
 pub struct ListDTO {
     pub name: String,
     pub description: Option<String>,

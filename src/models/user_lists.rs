@@ -2,7 +2,7 @@ use diesel::prelude::*;
 use crate::models::user::{User, UserDTO};
 use crate::models::list::{List, ListDTO};
 use crate::schema::user_lists::dsl::*;
-use crate::schema::user_lists::*;
+use crate::schema::user_lists;
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct UserList {
