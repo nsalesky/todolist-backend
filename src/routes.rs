@@ -15,30 +15,9 @@ use crate::models::user::{LoginDTO, User, UserDTO};
 use crate::schema::users;
 use crate::services::account_service;
 
-// type Result<T, E = Debug<diesel::result::Error>> = std::result::Result<T, E>;
-
-// #[post("/users/create", format = "json", data = "<create_user>")]
-// pub async fn create_user(db: PostgresDbConn, create_user: Json<CreateUserRequest>) -> Result<Created<Json<&'static str>>> {
-//     let user = UserDTO::from_create(create_user.into_inner());
-//
-//     db.run(move |conn| {
-//         diesel::insert_into(users::table)
-//             .values(user)
-//             .execute(conn)
-//     }).await?;
-//
-//     Ok(Created::new("/").body(Json("hello there")))
-// }
-//
-// #[get("/users/<id>")]
-// pub async fn get_user(db: PostgresDbConn, id: i32) -> Option<Json<User>> {
-//     db.run(move |conn| {
-//         users::table
-//             .filter(users::id.eq(id))
-//             .first(conn)
-//     }).await.map(Json).ok()
-// }
-
+/// A route to sign up a new user with the specified JSON user information. Attempts to
+/// insert them into the users table, and returns a response indicating whether it was successful
+/// or not.
 #[post("/signup", format = "json", data = "<user>")]
 pub async fn signup(user: Json<UserDTO>, db: PostgresDbConn) -> status::Custom<Json<Response>> {
     let response = account_service::signup(user.into_inner(), db).await;
@@ -49,6 +28,8 @@ pub async fn signup(user: Json<UserDTO>, db: PostgresDbConn) -> status::Custom<J
     )
 }
 
+/// A route to log in a user with the given JSON login information. If successful, includes their
+/// authentication token in the response. Otherwise, indicates the failure through the status code.
 #[post("/login", format = "json", data = "<login>")]
 pub async fn login(login: Json<LoginDTO>, db: PostgresDbConn) -> status::Custom<Json<Response>> {
     let response = account_service::login(login.into_inner(), db).await;
@@ -59,6 +40,9 @@ pub async fn login(login: Json<LoginDTO>, db: PostgresDbConn) -> status::Custom<
     )
 }
 
+// todo: remove this route
+/// A DEBUG route to test logging in a user with their authentication token.
+/// For now, returns all of the user's information in the response if the token is valid.
 #[get("/users")]
 pub async fn get_user(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
     let response = account_service::get_user(token.username, db).await;
