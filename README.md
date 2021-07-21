@@ -1,1 +1,3 @@
-I took a lot of inspiration from this project for some of the specifics https://github.com/SakaDream/rocket-rest-api-with-jwt
+I took a lot of inspiration and examples from these projects for figuring out the User authentication:
+- https://github.com/SakaDream/rocket-rest-api-with-jwt
+- https://github.com/TatriX/realworld-rust-rocket

@@ -43,10 +43,10 @@ pub struct LoginDTO {
 
 // #[derive(Insertable)]
 // #[table_name = "users"]
-pub struct LoginInfoDTO {
-    pub id: i32,
-    pub username: String,
-}
+// pub struct LoginInfoDTO {
+//     pub id: i32,
+//     pub username: String,
+// }
 
 impl User {
     /// Hash the password for the given user and attempt to add them to the database
@@ -75,8 +75,6 @@ impl User {
 
         if !unverified_user.password_hash.is_empty()
             && verify(&login.password, &unverified_user.password_hash).unwrap() {
-            // let login_session_str = User::generate_login_session();
-            // User::update_login_session_to_db(&unverified_user.username, &login_session_str, conn);
 
             Some(LoginInfoDTO {
                 id: unverified_user.id,
@@ -103,19 +101,4 @@ impl User {
             None
         }
     }
-
-    // pub fn generate_login_session() -> String {
-    //     Uuid::new_v4().to_simple().to_string()
-    // }
-    //
-    // pub fn update_login_session_to_db(un: &str, login_session_str: &str, conn: &PgConnection) -> bool {
-    //     if let Some(user) = User::find_user_by_username(un, conn) {
-    //         diesel::update(users.find(user.id))
-    //             .set(login_session.eq(login_session_str.to_string()))
-    //             .execute(conn)
-    //             .is_ok()
-    //     } else {
-    //         false
-    //     }
-    // }
 }
