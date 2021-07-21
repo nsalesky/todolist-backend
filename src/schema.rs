@@ -5,6 +5,5 @@ table! {
         email -> Varchar,
         preferred_name -> Varchar,
         password_hash -> Text,
-        login_session -> Varchar,
     }
 }

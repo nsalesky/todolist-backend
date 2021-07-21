@@ -16,8 +16,9 @@ mod database;
 mod models;
 mod routes;
 mod schema;
-mod jwt;
+mod auth;
 mod constants;
+mod services;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -27,6 +28,6 @@ fn index() -> &'static str {
 #[launch]
 fn rocket() -> Rocket<Build> {
     rocket::build()
-        .mount("/", routes![index])
+        .mount("/", routes![index, routes::signup, routes::login, routes::get_user])
         .attach(PostgresDbConn::fairing())
 }

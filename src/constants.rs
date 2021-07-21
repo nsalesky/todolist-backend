@@ -7,3 +7,6 @@ pub const MESSAGE_SIGNUP_FAILED: &str = "error when signing up, please try again
 pub const MESSAGE_LOGIN_SUCCESS: &str = "login successfully";
 pub const MESSAGE_LOGIN_FAILED: &str = "wrong username or password, please try again";
 pub const MESSAGE_INVALID_TOKEN: &str = "invalid token, please login again";
+
+pub const MESSAGE_GET_USER_SUCCESS: &str = "found user successfully";
+pub const MESSAGE_GET_USER_FAILED: &str = "wrong username, please try again";

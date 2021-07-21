@@ -1,18 +1,19 @@
+use rocket::http::Status;
 use rocket::response::Debug;
 use rocket::response::status;
 use rocket::response::status::Created;
 use rocket::serde::json::Json;
 use rocket_sync_db_pools::diesel;
 use rocket_sync_db_pools::diesel::prelude::*;
-use serde_json::json;
 
-use crate::database::PostgresDbConn;
-use crate::models::user::{User, UserDTO, LoginDTO};
-use crate::schema::users;
-use crate::models::response::{ResponseWithStatus, Response};
-use rocket::http::Status;
+use crate::auth;
+use crate::auth::UserToken;
 use crate::constants;
-use crate::jwt;
+use crate::database::PostgresDbConn;
+use crate::models::response::{Response, ResponseWithStatus};
+use crate::models::user::{LoginDTO, User, UserDTO};
+use crate::schema::users;
+use crate::services::account_service;
 
 // type Result<T, E = Debug<diesel::result::Error>> = std::result::Result<T, E>;
 
@@ -38,51 +39,32 @@ use crate::jwt;
 //     }).await.map(Json).ok()
 // }
 
-pub async fn signup(user: UserDTO, db: PostgresDbConn) -> ResponseWithStatus {
-    db.run(|conn| {
-        if User::signup(user, &conn) {
-            ResponseWithStatus {
-                status_code: Status::Ok.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_SIGNUP_SUCCESS),
-                    data: serde_json::to_value("").unwrap(),
-                },
-            }
-        } else {
-            ResponseWithStatus {
-                status_code: Status::BadRequest.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_SIGNUP_FAILED),
-                    data: serde_json::to_value("").unwrap(),
-                }
-            }
-        }
+#[post("/signup", format = "json", data = "<user>")]
+pub async fn signup(user: Json<UserDTO>, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = account_service::signup(user.into_inner(), db).await;
 
-    }).await
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
 }
 
-pub async fn login(login: LoginDTO, db: PostgresDbConn) -> ResponseWithStatus {
-    db.run(|conn| {
-        if let Some(result) = User::login(login, &conn) {
-            ResponseWithStatus {
-                status_code: Status::Ok.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_LOGIN_SUCCESS),
-                    data: serde_json::to_value(
-                        json!({
-                            "token": jwt::generate_token(result),
-                            "type": "Bearer"
-                        })).unwrap(),
-                },
-            }
-        } else {
-            ResponseWithStatus {
-                status_code: Status::BadRequest.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_LOGIN_FAILED),
-                    data: serde_json::to_value("").unwrap(),
-                },
-            }
-        }
-    }).await
+#[post("/login", format = "json", data = "<login>")]
+pub async fn login(login: Json<LoginDTO>, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = account_service::login(login.into_inner(), db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}
+
+#[get("/users")]
+pub async fn get_user(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = account_service::get_user(token.username, db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
 }

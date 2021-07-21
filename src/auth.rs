@@ -25,16 +25,23 @@ pub struct UserToken {
     // expiration
     pub exp: i64,
     // data
-    pub user: String,
-    pub login_session: String,
+    pub id: i32,
+    // user id
+    pub username: String,
 }
+
+// impl AuthToken {
+//     pub fn token(&self) -> String {
+//         jsonwebtoken::encode(&Header::default(), self, &EncodingKey::from_secret(include_bytes!("secret.key"))).expect("jwt")
+//     }
+// }
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for UserToken {
     type Error = status::Custom<Json<Response>>;
 
     async fn from_request(request: &'r Request<'_>) -> Outcome<Self, Self::Error> {
-        let db = request.rocket().state::<PostgresDbConn>().unwrap();
+        // let db = request.rocket().state::<PostgresDbConn>().unwrap();
 
         if let Some(authen_header) = request.headers().get_one("Authorization") {
             let authen_str = authen_header.to_string();
@@ -42,9 +49,11 @@ impl<'r> FromRequest<'r> for UserToken {
             if authen_str.starts_with("Bearer") {
                 let token = authen_str[6..authen_str.len()].trim();
                 if let Ok(token_data) = decode_token(token.to_string()) {
-                    if verify_token(&token_data, db) {
-                        return Outcome::Success(token_data.claims);
-                    }
+                    return Outcome::Success(token_data.claims);
+
+                    // if verify_token(&token_data, db) {
+                    //     return Outcome::Success(token_data.claims);
+                    // }
                 }
             }
         }
@@ -67,8 +76,8 @@ pub fn generate_token(login: LoginInfoDTO) -> String {
     let payload = UserToken {
         iat: now,
         exp: now + ONE_WEEK,
-        user: login.username,
-        login_session: login.login_session,
+        id: login.id,
+        username: login.username,
     };
 
     jsonwebtoken::encode(&Header::default(), &payload, &EncodingKey::from_secret(include_bytes!("secret.key"))).unwrap()
@@ -78,12 +87,6 @@ fn decode_token(token: String) -> Result<TokenData<UserToken>> {
     jsonwebtoken::decode::<UserToken>(&token, &DecodingKey::from_secret(include_bytes!("secret.key")), &Validation::default())
 }
 
-// async fn verify_token(token_data: &TokenData<UserToken>, db: &PostgresDbConn) -> bool {
-//     db.run(move |conn| {
-//         User::is_valid_login_session(&token_data.claims, conn)
-//     }).await
+// fn verify_token(token_data: &TokenData<UserToken>, conn: &PostgresDbConn) -> bool {
+//     User::is_valid_login_session(&token_data.claims, &conn.0)
 // }
-
-fn verify_token(token_data: &TokenData<UserToken>, conn: &PostgresDbConn) -> bool {
-    User::is_valid_login_session(&token_data.claims, &conn.0)
-}
