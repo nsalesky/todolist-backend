@@ -3,7 +3,8 @@ table! {
         id -> Int4,
         username -> Varchar,
         email -> Varchar,
-        name -> Varchar,
-        password_hash -> Bpchar,
+        preferred_name -> Varchar,
+        password_hash -> Text,
+        login_session -> Varchar,
     }
 }

@@ -1,0 +1,1 @@
+I took a lot of inspiration from this project for some of the specifics https://github.com/SakaDream/rocket-rest-api-with-jwt

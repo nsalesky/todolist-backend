@@ -1,8 +1,7 @@
-extern crate crypto;
-#[macro_use]
-extern crate diesel;
 #[macro_use]
 extern crate rocket;
+#[macro_use]
+extern crate diesel;
 #[macro_use]
 extern crate serde;
 
@@ -17,7 +16,8 @@ mod database;
 mod models;
 mod routes;
 mod schema;
-mod lib;
+mod jwt;
+mod constants;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -27,6 +27,6 @@ fn index() -> &'static str {
 #[launch]
 fn rocket() -> Rocket<Build> {
     rocket::build()
-        .mount("/", routes![index, routes::get_user, routes::create_user])
+        .mount("/", routes![index])
         .attach(PostgresDbConn::fairing())
 }
