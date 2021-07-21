@@ -4,6 +4,8 @@ use crate::models::list::{List, ListDTO};
 use crate::schema::user_lists::dsl::*;
 use crate::schema::user_lists;
 
+/// Represents a single row in the user_lists table associating a user with a list that they
+/// have access to.
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct UserList {
     pub id: i32,
@@ -11,6 +13,7 @@ pub struct UserList {
     pub list_id: i32,
 }
 
+/// Represents a new row that can be inserted into the users_lists table.
 #[derive(Insertable)]
 #[table_name = "user_lists"]
 pub struct NewUserList {
