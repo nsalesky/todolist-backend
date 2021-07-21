@@ -1,6 +1,7 @@
 use rocket::response::Debug;
 
 use todo_backend::hash_password;
+
 use crate::schema::users;
 
 #[derive(Queryable, Serialize, Deserialize)]

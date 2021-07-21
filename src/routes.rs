@@ -1,13 +1,13 @@
 use rocket::response::Debug;
 use rocket::response::status;
-use rocket::serde::json::{Json};
+use rocket::response::status::Created;
+use rocket::serde::json::Json;
 use rocket_sync_db_pools::diesel;
 use rocket_sync_db_pools::diesel::prelude::*;
 
 use crate::database::PostgresDbConn;
-use crate::models::{CreateUser, User, InsertableUser};
+use crate::models::user::{CreateUser, InsertableUser, User};
 use crate::schema::users;
-use rocket::response::status::Created;
 
 type Result<T, E = Debug<diesel::result::Error>> = std::result::Result<T, E>;
 
