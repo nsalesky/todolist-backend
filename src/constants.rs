@@ -11,3 +11,9 @@ pub const MESSAGE_LOGIN_FAILED: &str = "wrong username or password, please try a
 pub const MESSAGE_INVALID_TOKEN: &str = "invalid token, please login again";
 pub const MESSAGE_GET_USER_SUCCESS: &str = "found user successfully";
 pub const MESSAGE_GET_USER_FAILED: &str = "wrong username, please try again";
+pub const MESSAGE_USER_NOT_FOUND: &str = "could not identify the given user, please try again";
+
+pub const MESSAGE_CREATE_LIST_SUCCESS: &str = "created list successfully";
+pub const MESSAGE_CREATE_LIST_FAILED: &str = "error when creating list, please try again";
+
+pub const MESSAGE_CREATE_LIST_ASSOCIATE_FAIL: &str = "error when associating the list with its owner, please try again";

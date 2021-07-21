@@ -20,7 +20,7 @@ features = ["diesel_postgres_pool"]
 
 [dependencies.diesel]
 version = "1.4.4"
-features = ["postgres"]
+features = ["postgres", "chrono"]
 
 [dependencies.uuid]
 version = "0.8.2"
