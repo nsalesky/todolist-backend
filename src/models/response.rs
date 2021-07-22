@@ -15,3 +15,16 @@ pub struct ResponseWithStatus {
     pub status_code: u16,
     pub response: Response,
 }
+
+impl ResponseWithStatus {
+    /// Creates a `ResponseWithStatus` with the given status code and message, and empty data
+    pub fn with(status_code: u16, message: &str) -> ResponseWithStatus {
+        ResponseWithStatus {
+            status_code,
+            response: Response {
+                message: String::from(message),
+                data: serde_json::to_value("").unwrap(),
+            },
+        }
+    }
+}

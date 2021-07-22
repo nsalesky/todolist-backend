@@ -21,6 +21,7 @@ table! {
         id -> Int4,
         user_id -> Int4,
         list_id -> Int4,
+        is_owner -> Bool,
     }
 }
 

@@ -114,4 +114,14 @@ impl User {
             None
         }
     }
+
+    /// Tries to find the user with the given id in the users table.
+    pub fn find_user_by_id(user_id: i32, conn: &PgConnection) -> Option<User> {
+        let possible_user = users.filter(id.eq(user_id)).get_result::<User>(conn);
+        if let Ok(user) = possible_user {
+            Some(user)
+        } else {
+            None
+        }
+    }
 }

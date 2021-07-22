@@ -50,4 +50,23 @@ impl List {
             Err(_) => None,
         }
     }
+
+    /// Attempts to delete the `List` with the given primary key, if it exists.
+    /// Returns true if the delete succeeded, or false if it failed.
+    pub fn delete_list(id: i32, conn: &PgConnection) -> bool {
+        diesel::delete(lists.filter(list_id.eq(id)))
+            .execute(conn)
+            .is_ok()
+    }
+
+    /// Finds the `List` with the given id, if it exists.
+    pub fn find_list_by_id(id: i32, conn: &PgConnection) -> Option<List> {
+        let possible_list = lists.filter(list_id.eq(id)).get_result::<List>(conn);
+
+        if let Ok(list) = possible_list {
+            Some(list)
+        } else {
+            None
+        }
+    }
 }

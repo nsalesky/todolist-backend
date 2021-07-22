@@ -1,9 +1,9 @@
 
 // All of the messages that can be returned for each API call.
 pub const MESSAGE_OK: &str = "ok";
-pub const MESSAGE_CAN_NOT_INSERT_DATA: &str = "can not insert data";
-pub const MESSAGE_CAN_NOT_UPDATE_DATA: &str = "can not update data";
-pub const MESSAGE_CAN_NOT_DELETE_DATA: &str = "can not delete data";
+// pub const MESSAGE_CAN_NOT_INSERT_DATA: &str = "can not insert data";
+// pub const MESSAGE_CAN_NOT_UPDATE_DATA: &str = "can not update data";
+// pub const MESSAGE_CAN_NOT_DELETE_DATA: &str = "can not delete data";
 pub const MESSAGE_SIGNUP_SUCCESS: &str = "signed up successfully";
 pub const MESSAGE_SIGNUP_FAILED: &str = "error when signing up, please try again";
 pub const MESSAGE_LOGIN_SUCCESS: &str = "logged in successfully";
@@ -17,3 +17,15 @@ pub const MESSAGE_CREATE_LIST_SUCCESS: &str = "created list successfully";
 pub const MESSAGE_CREATE_LIST_FAILED: &str = "error when creating list, please try again";
 
 pub const MESSAGE_CREATE_LIST_ASSOCIATE_FAIL: &str = "error when associating the list with its owner, please try again";
+
+pub const MESSAGE_DELETE_LIST_FAILED: &str = "error when deleting list, please try again";
+pub const MESSAGE_DELETE_NOT_OWNER: &str = "error deleting list, user is not an owner";
+pub const MESSAGE_DELETE_LIST_SUCCESS: &str = "deleted list successfully";
+
+pub const MESSAGE_CREATE_ITEM_SUCCESS: &str = "created item successfully";
+pub const MESSAGE_CREATE_ITEM_FAILED: &str = "error when creating item, please try again";
+
+pub const MESSAGE_NO_ACCESS: &str = "you do not have access to the specified resource";
+
+pub const MESSAGE_DELETE_ITEM_SUCCESS: &str = "deleted item successfully";
+pub const MESSAGE_DELETE_ITEM_FAILED: &str = "error when deleting item, please try again";

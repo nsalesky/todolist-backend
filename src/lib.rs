@@ -28,7 +28,11 @@ pub fn rocket() -> rocket::Rocket<Build> {
             routes::users::signup,
             routes::users::login,
             routes::users::get_user,
+
             routes::lists::create_list,
+            routes::lists::delete_list,
+            routes::lists::post_item,
+            routes::lists::delete_item,
         ])
         .attach(database::PostgresDbConn::fairing())
         .register("/api", catchers![not_found])
