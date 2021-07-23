@@ -56,3 +56,14 @@ pub async fn delete_item(list_id: i32, item_id: i32, token: UserToken, db: Postg
         Json(response.response),
     )
 }
+
+/// Attempts to get the lists that the logged-in user can access.
+#[get("/lists")]
+pub async fn get_lists(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = list_service::get_lists_for_user(token.id, db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}

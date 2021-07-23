@@ -3,6 +3,8 @@ use diesel::prelude::*;
 
 use crate::schema::lists;
 use crate::schema::lists::dsl::*;
+use crate::schema::*;
+use diesel::pg::Pg;
 
 /// An object representing a full row in the lists table.
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
@@ -63,10 +65,24 @@ impl List {
     pub fn find_list_by_id(id: i32, conn: &PgConnection) -> Option<List> {
         let possible_list = lists.filter(list_id.eq(id)).get_result::<List>(conn);
 
-        if let Ok(list) = possible_list {
-            Some(list)
-        } else {
-            None
+        match possible_list {
+            Ok(list) => Some(list),
+            Err(_) => None,
+        }
+    }
+
+    /// Finds the `List` rows that the given user can access.
+    pub fn find_lists_for_user(user_id: i32, conn: &PgConnection) -> Option<Vec<List>> {
+        let possible_lists = lists::table
+            .inner_join(user_lists::table.on(lists::list_id.eq(user_lists::list_id)))
+            .into_boxed()
+            .select((lists::list_id, lists::name, lists::description, lists::date_created))
+            .filter(user_lists::user_id.eq(user_id))
+            .load::<List>(conn);
+
+        match possible_lists {
+            Ok(result_lists) => Some(result_lists),
+            Err(_) => None,
         }
     }
 }

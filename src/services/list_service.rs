@@ -100,3 +100,22 @@ pub async fn delete_item(list_id: i32, user_id: i32, item_id: i32, db: PostgresD
         }
     }).await
 }
+
+/// Responds with a JSON object containing basic information about each list that the given user has access to.
+pub async fn get_lists_for_user(user_id: i32, db: PostgresDbConn) -> ResponseWithStatus {
+    db.run(move |conn| {
+        if let Some(lists) = List::find_lists_for_user(user_id, conn) {
+            ResponseWithStatus {
+                status_code: Status::Ok.code,
+                response: Response {
+                    message: String::from(constants::MESSAGE_OK),
+                    data: serde_json::to_value(lists).unwrap(),
+                },
+            }
+
+
+        } else {
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_USER_NOT_FOUND)
+        }
+    }).await
+}

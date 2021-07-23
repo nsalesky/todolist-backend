@@ -33,6 +33,7 @@ pub fn rocket() -> rocket::Rocket<Build> {
             routes::lists::delete_list,
             routes::lists::post_item,
             routes::lists::delete_item,
+            routes::lists::get_lists,
         ])
         .attach(database::PostgresDbConn::fairing())
         .register("/api", catchers![not_found])
