@@ -1,4 +1,3 @@
-
 // All of the messages that can be returned for each API call.
 pub const MESSAGE_OK: &str = "ok";
 // pub const MESSAGE_CAN_NOT_INSERT_DATA: &str = "can not insert data";
@@ -29,3 +28,6 @@ pub const MESSAGE_NO_ACCESS: &str = "you do not have access to the specified res
 
 pub const MESSAGE_DELETE_ITEM_SUCCESS: &str = "deleted item successfully";
 pub const MESSAGE_DELETE_ITEM_FAILED: &str = "error when deleting item, please try again";
+
+pub const MESSAGE_GET_LIST_SUCCESS: &str = "got list successfully";
+pub const MESSAGE_GET_LIST_FAILED: &str = "error when getting list, please try again";

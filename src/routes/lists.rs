@@ -5,12 +5,13 @@ use rocket::response::status::Created;
 use rocket::serde::json::Json;
 use rocket_sync_db_pools::diesel;
 use rocket_sync_db_pools::diesel::prelude::*;
+
 use crate::auth::UserToken;
 use crate::database::PostgresDbConn;
-use crate::models::response::Response;
-use crate::models::list::ListDTO;
-use crate::services::list_service;
 use crate::models::item::ItemDTO;
+use crate::models::list::ListDTO;
+use crate::models::response::Response;
+use crate::services::list_service;
 
 /// Attempts to create a new list
 #[post("/lists", format = "json", data = "<new_list>")]
@@ -61,6 +62,17 @@ pub async fn delete_item(list_id: i32, item_id: i32, token: UserToken, db: Postg
 #[get("/lists")]
 pub async fn get_lists(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
     let response = list_service::get_lists_for_user(token.id, db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}
+
+/// Attempts to get a full single list with items for the logged-in user.
+#[get("/lists/<list_id>")]
+pub async fn get_list(list_id: i32, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = list_service::get_list(list_id, token.id, db).await;
 
     status::Custom(
         Status::from_code(response.status_code).unwrap(),

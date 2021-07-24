@@ -52,6 +52,45 @@ pub async fn create_list(list: ListDTO, owner_username: String, db: PostgresDbCo
     }).await
 }
 
+/// Responds with a JSON object containing basic information about each list that the given user has access to.
+pub async fn get_lists_for_user(user_id: i32, db: PostgresDbConn) -> ResponseWithStatus {
+    db.run(move |conn| {
+        if let Some(lists) = List::find_lists_for_user(user_id, conn) {
+            ResponseWithStatus {
+                status_code: Status::Ok.code,
+                response: Response {
+                    message: String::from(constants::MESSAGE_OK),
+                    data: serde_json::to_value(lists).unwrap(),
+                },
+            }
+        } else {
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_USER_NOT_FOUND)
+        }
+    }).await
+}
+
+/// Attempts to get the full list (with items) with the given `list_id`, as long as the user with `user_id` has
+/// access to it.
+pub async fn get_list(list_id: i32, user_id: i32, db: PostgresDbConn) -> ResponseWithStatus {
+    db.run(move |conn| {
+        if !UserList::has_list_access(list_id, user_id, conn) {
+            return ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_NO_ACCESS);
+        }
+
+        if let Some(list) = List::find_complete_list_by_id(list_id, conn) {
+            ResponseWithStatus {
+                status_code: Status::Ok.code,
+                response: Response {
+                    message: String::from(constants::MESSAGE_GET_LIST_SUCCESS),
+                    data: serde_json::to_value(list).unwrap(),
+                },
+            }
+        } else {
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_GET_LIST_FAILED)
+        }
+    }).await
+}
+
 /// Attempts to delete the list with the given `list_id`. Makes sure that the user with `user_id`
 /// owns the list before deleting it. Also, through cascading, deletes any `UserList` or `Item`s
 /// related to the list.
@@ -97,25 +136,6 @@ pub async fn delete_item(list_id: i32, user_id: i32, item_id: i32, db: PostgresD
             ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_DELETE_ITEM_SUCCESS)
         } else {
             ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_DELETE_ITEM_FAILED)
-        }
-    }).await
-}
-
-/// Responds with a JSON object containing basic information about each list that the given user has access to.
-pub async fn get_lists_for_user(user_id: i32, db: PostgresDbConn) -> ResponseWithStatus {
-    db.run(move |conn| {
-        if let Some(lists) = List::find_lists_for_user(user_id, conn) {
-            ResponseWithStatus {
-                status_code: Status::Ok.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_OK),
-                    data: serde_json::to_value(lists).unwrap(),
-                },
-            }
-
-
-        } else {
-            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_USER_NOT_FOUND)
         }
     }).await
 }

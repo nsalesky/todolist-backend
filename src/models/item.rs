@@ -1,7 +1,8 @@
+use diesel::pg::Pg;
 use diesel::prelude::*;
+
 use crate::schema::items;
 use crate::schema::items::dsl;
-use diesel::pg::Pg;
 
 /// An object representing a complete row in the items table.
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
@@ -61,6 +62,18 @@ impl Item {
             item.list_id == list_id
         } else {
             false
+        }
+    }
+
+    /// Finds all `Item` objects owned by the list with the given `list_id`.
+    pub fn find_items_for_list(list_id: i32, conn: &PgConnection) -> Vec<Item> {
+        let possible_items = items::table
+            .filter(items::list_id.eq(&list_id))
+            .get_results::<Item>(conn);
+
+        match possible_items {
+            Ok(result_items) => result_items,
+            Err(_) => vec![],
         }
     }
 

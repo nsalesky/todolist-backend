@@ -1,10 +1,11 @@
 use chrono::{NaiveDate, Utc};
+use diesel::pg::Pg;
 use diesel::prelude::*;
 
+use crate::models::item::Item;
+use crate::schema::*;
 use crate::schema::lists;
 use crate::schema::lists::dsl::*;
-use crate::schema::*;
-use diesel::pg::Pg;
 
 /// An object representing a full row in the lists table.
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
@@ -30,6 +31,16 @@ pub struct NewList {
 pub struct ListDTO {
     pub name: String,
     pub description: Option<String>,
+}
+
+/// An object containing information for the complete list, including all of its items.
+#[derive(Serialize, Deserialize)]
+pub struct ListWithItems {
+    pub list_id: i32,
+    pub name: String,
+    pub description: Option<String>,
+    pub date_created: NaiveDate,
+    pub items: Vec<Item>,
 }
 
 impl List {
@@ -68,6 +79,23 @@ impl List {
         match possible_list {
             Ok(list) => Some(list),
             Err(_) => None,
+        }
+    }
+
+    /// Finds the complete `ListWithItems` for the list with the given `id`, if it exists.
+    pub fn find_complete_list_by_id(id: i32, conn: &PgConnection) -> Option<ListWithItems> {
+        if let Some(list) = List::find_list_by_id(id, conn) {
+            let items = Item::find_items_for_list(id, conn);
+
+            Some(ListWithItems {
+                list_id: list.list_id,
+                name: list.name,
+                description: list.description,
+                date_created: list.date_created,
+                items,
+            })
+        } else {
+            None
         }
     }
 

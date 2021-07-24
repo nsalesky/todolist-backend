@@ -1,9 +1,10 @@
 use diesel::prelude::*;
-use crate::models::user::{User, UserDTO};
-use crate::models::list::{List, ListDTO};
-use crate::schema::user_lists::dsl;
-use crate::schema::user_lists;
 use diesel::result::Error;
+
+use crate::models::list::{List, ListDTO};
+use crate::models::user::{User, UserDTO};
+use crate::schema::user_lists;
+use crate::schema::user_lists::dsl;
 
 /// Represents a single row in the user_lists table associating a user with a list that they
 /// have access to.

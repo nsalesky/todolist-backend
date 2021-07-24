@@ -24,16 +24,17 @@ fn not_found(request: &Request) -> String {
 pub fn rocket() -> rocket::Rocket<Build> {
     rocket::build()
         .mount("/api",
-        routes![
+               routes![
             routes::users::signup,
             routes::users::login,
             routes::users::get_user,
 
             routes::lists::create_list,
+            routes::lists::get_lists,
+            routes::lists::get_list,
             routes::lists::delete_list,
             routes::lists::post_item,
             routes::lists::delete_item,
-            routes::lists::get_lists,
         ])
         .attach(database::PostgresDbConn::fairing())
         .register("/api", catchers![not_found])
