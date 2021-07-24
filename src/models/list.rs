@@ -64,14 +64,6 @@ impl List {
         }
     }
 
-    /// Attempts to delete the `List` with the given primary key, if it exists.
-    /// Returns true if the delete succeeded, or false if it failed.
-    pub fn delete_list(id: i32, conn: &PgConnection) -> bool {
-        diesel::delete(lists.filter(list_id.eq(id)))
-            .execute(conn)
-            .is_ok()
-    }
-
     /// Finds the `List` with the given id, if it exists.
     pub fn find_list_by_id(id: i32, conn: &PgConnection) -> Option<List> {
         let possible_list = lists.filter(list_id.eq(id)).get_result::<List>(conn);
@@ -112,5 +104,25 @@ impl List {
             Ok(result_lists) => Some(result_lists),
             Err(_) => None,
         }
+    }
+
+    /// Attempts to update the list with the given `id` to the new values in `new_list`.
+    /// Returns true if successful, or false otherwise.
+    pub fn update_list(id: i32, new_list: ListDTO, conn: &PgConnection) -> bool {
+        diesel::update(lists.filter(lists::list_id.eq(id)))
+            .set((
+                lists::name.eq(new_list.name),
+                lists::description.eq(new_list.description)
+            ))
+            .execute(conn)
+            .is_ok()
+    }
+
+    /// Attempts to delete the `List` with the given primary key, if it exists.
+    /// Returns true if the delete succeeded, or false if it failed.
+    pub fn delete_list(id: i32, conn: &PgConnection) -> bool {
+        diesel::delete(lists.filter(list_id.eq(id)))
+            .execute(conn)
+            .is_ok()
     }
 }

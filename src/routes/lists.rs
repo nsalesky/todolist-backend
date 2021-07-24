@@ -24,10 +24,32 @@ pub async fn create_list(new_list: Json<ListDTO>, token: UserToken, db: Postgres
     )
 }
 
-/// Attempts to delete an existing list.
-#[delete("/lists/<list_id>")]
-pub async fn delete_list(list_id: i32, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
-    let response = list_service::delete_list(list_id, token.id, db).await;
+/// Attempts to get the lists that the logged-in user can access.
+#[get("/lists")]
+pub async fn get_lists(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = list_service::get_lists_for_user(token.id, db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}
+
+/// Attempts to get a full single list with items for the logged-in user.
+#[get("/lists/<list_id>")]
+pub async fn get_list(list_id: i32, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = list_service::get_list(list_id, token.id, db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}
+
+/// Attempts to update the specified list with the new values.
+#[put("/lists/<list_id>", format = "json", data = "<new_list>")]
+pub async fn put_list(list_id: i32, new_list: Json<ListDTO>, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = list_service::put_list(list_id, token.id, new_list.into_inner(), db).await;
 
     status::Custom(
         Status::from_code(response.status_code).unwrap(),
@@ -47,32 +69,21 @@ pub async fn post_item(list_id: i32, new_item: Json<ItemDTO>, token: UserToken, 
     )
 }
 
+/// Attempts to delete an existing list.
+#[delete("/lists/<list_id>")]
+pub async fn delete_list(list_id: i32, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = list_service::delete_list(list_id, token.id, db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}
+
 /// Attempts to delete an item from a list.
 #[delete("/lists/<list_id>/<item_id>")]
 pub async fn delete_item(list_id: i32, item_id: i32, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
     let response = list_service::delete_item(list_id, token.id, item_id, db).await;
-
-    status::Custom(
-        Status::from_code(response.status_code).unwrap(),
-        Json(response.response),
-    )
-}
-
-/// Attempts to get the lists that the logged-in user can access.
-#[get("/lists")]
-pub async fn get_lists(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
-    let response = list_service::get_lists_for_user(token.id, db).await;
-
-    status::Custom(
-        Status::from_code(response.status_code).unwrap(),
-        Json(response.response),
-    )
-}
-
-/// Attempts to get a full single list with items for the logged-in user.
-#[get("/lists/<list_id>")]
-pub async fn get_list(list_id: i32, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
-    let response = list_service::get_list(list_id, token.id, db).await;
 
     status::Custom(
         Status::from_code(response.status_code).unwrap(),

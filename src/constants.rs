@@ -31,3 +31,6 @@ pub const MESSAGE_DELETE_ITEM_FAILED: &str = "error when deleting item, please t
 
 pub const MESSAGE_GET_LIST_SUCCESS: &str = "got list successfully";
 pub const MESSAGE_GET_LIST_FAILED: &str = "error when getting list, please try again";
+
+pub const MESSAGE_UPDATE_LIST_SUCCESS: &str = "updated list successfully";
+pub const MESSAGE_UPDATE_LIST_FAILED: &str = "error when updating list, please try again";
