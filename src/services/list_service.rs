@@ -100,9 +100,9 @@ pub async fn put_list(list_id: i32, user_id: i32, new_list: ListDTO, db: Postgre
         }
 
         if List::update_list(list_id, new_list, conn) {
-            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_UPDATE_LIST_SUCCESS)
+            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_UPDATE_SUCCESS)
         } else {
-            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_UPDATE_LIST_FAILED)
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_UPDATE_FAILED)
         }
     }).await
 }
@@ -120,9 +120,9 @@ pub async fn put_item_for_list(list_id: i32, user_id: i32, item_id: i32, new_ite
         }
 
         if Item::update_item(item_id, new_item, conn) {
-            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_UPDATE_ITEM_SUCCESS)
+            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_UPDATE_SUCCESS)
         } else {
-            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_UPDATE_ITEM_FAILED)
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_UPDATE_FAILED)
         }
     }).await
 }

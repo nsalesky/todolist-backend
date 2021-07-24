@@ -55,6 +55,19 @@ pub struct LoginInfoDTO {
     pub username: String,
 }
 
+// I'm not sure if JSON objects are necessary/good for these update objects, but I'll go with them
+// for now until I learn better
+
+#[derive(Serialize, Deserialize)]
+pub struct UpdatePreferredName {
+    pub preferred_name: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct UpdatePassword {
+    pub password: String,
+}
+
 impl User {
     /// Hash the password for the given user and attempt to insert them to the users table.
     pub fn signup(user: UserDTO, conn: &PgConnection) -> bool {
@@ -97,7 +110,7 @@ impl User {
 
     /// Checks whether the given token is valid, ie whether it corresponds to a real user in
     /// the users table.
-    pub async fn is_valid_login_token(user_token: &UserToken, conn: &PgConnection) -> bool {
+    pub fn is_valid_login_token(user_token: &UserToken, conn: &PgConnection) -> bool {
         users
             .filter(id.eq(&user_token.id))
             .filter(username.eq(&user_token.username))
@@ -123,5 +136,25 @@ impl User {
         } else {
             None
         }
+    }
+
+    /// Attempts to update the preferred name for the user with username `un` to the new name in `update_name`.
+    /// Returns true if successful or false otherwise.
+    pub fn update_preferred_name(un: String, update_name: UpdatePreferredName, conn: &PgConnection) -> bool {
+        diesel::update(users.filter(users::username.eq(un)))
+            .set(users::preferred_name.eq(update_name.preferred_name))
+            .execute(conn)
+            .is_ok()
+    }
+
+    /// Attempts to update the password for the user with username `un` to the new password in `update_password`.
+    /// Returns true if successful or false otherwise.
+    pub fn update_password(un: String, update_password: UpdatePassword, conn: &PgConnection) -> bool {
+        let new_hash = hash(&update_password.password, DEFAULT_COST).unwrap();
+
+        diesel::update(users.filter(users::username.eq(un)))
+            .set(users::password_hash.eq(new_hash))
+            .execute(conn)
+            .is_ok()
     }
 }

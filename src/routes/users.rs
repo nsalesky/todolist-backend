@@ -11,7 +11,7 @@ use crate::auth::UserToken;
 use crate::constants;
 use crate::database::PostgresDbConn;
 use crate::models::response::{Response, ResponseWithStatus};
-use crate::models::user::{LoginDTO, User, UserDTO};
+use crate::models::user::{LoginDTO, User, UserDTO, UpdatePreferredName, UpdatePassword};
 use crate::schema::users;
 use crate::services::account_service;
 
@@ -37,6 +37,28 @@ pub async fn login(login: Json<LoginDTO>, db: PostgresDbConn) -> status::Custom<
     status::Custom(
         Status::from_code(response.status_code).unwrap(),
         Json(response.response),
+    )
+}
+
+/// A route to update a user's preferred name to the new value in `preferred_name`.
+#[put("/users/name", format = "json", data = "<preferred_name>")]
+pub async fn put_preferred_name(preferred_name: Json<UpdatePreferredName>, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = account_service::put_preferred_name(token.username, preferred_name.into_inner(), db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response)
+    )
+}
+
+/// A route to update a user's password to the new value in `password`.
+#[put("/users/password", format = "json", data = "<password>")]
+pub async fn put_password(password: Json<UpdatePassword>, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = account_service::put_password(token.username, password.into_inner(), db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response)
     )
 }
 

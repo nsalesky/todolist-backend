@@ -27,6 +27,8 @@ pub fn rocket() -> rocket::Rocket<Build> {
                routes![
             routes::users::signup,
             routes::users::login,
+            routes::users::put_preferred_name,
+            routes::users::put_password,
             routes::users::get_user,
 
             routes::lists::create_list,

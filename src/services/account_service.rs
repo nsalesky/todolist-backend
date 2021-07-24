@@ -5,7 +5,7 @@ use crate::auth;
 use crate::constants;
 use crate::database::PostgresDbConn;
 use crate::models::response::{Response, ResponseWithStatus};
-use crate::models::user::{LoginDTO, User, UserDTO};
+use crate::models::user::{LoginDTO, User, UserDTO, UpdatePreferredName, UpdatePassword};
 
 /// Attempts to signup a new user with the specified user information.
 /// If successful, informs the user that the account has been created successfully.
@@ -82,6 +82,30 @@ pub async fn get_user(username: String, db: PostgresDbConn) -> ResponseWithStatu
                     data: serde_json::to_value("").unwrap(),
                 },
             }
+        }
+    }).await
+}
+
+/// Attempts to update the user's preferred name to the new value in `preferred_name` for the user
+/// with the given `username`.
+pub async fn put_preferred_name(username: String, preferred_name: UpdatePreferredName, db: PostgresDbConn) -> ResponseWithStatus {
+    db.run(move |conn| {
+        if User::update_preferred_name(username, preferred_name, conn) {
+            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_UPDATE_SUCCESS)
+        } else {
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_UPDATE_FAILED)
+        }
+    }).await
+}
+
+/// Attempts to update the user's password to the new value in `password` (hashed of course) for the user
+/// with the given `username`.
+pub async fn put_password(username: String, password: UpdatePassword, db: PostgresDbConn) -> ResponseWithStatus {
+    db.run(move |conn| {
+        if User::update_password(username, password, conn) {
+            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_UPDATE_SUCCESS)
+        } else {
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_UPDATE_FAILED)
         }
     }).await
 }
