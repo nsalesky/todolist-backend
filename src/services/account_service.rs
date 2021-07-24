@@ -13,21 +13,9 @@ use crate::models::user::{LoginDTO, User, UserDTO, UpdatePreferredName, UpdatePa
 pub async fn signup(user: UserDTO, db: PostgresDbConn) -> ResponseWithStatus {
     db.run(|conn| {
         if User::signup(user, &conn) {
-            ResponseWithStatus {
-                status_code: Status::Ok.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_SIGNUP_SUCCESS),
-                    data: serde_json::to_value("").unwrap(),
-                },
-            }
+            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_SIGNUP_SUCCESS)
         } else {
-            ResponseWithStatus {
-                status_code: Status::BadRequest.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_SIGNUP_FAILED),
-                    data: serde_json::to_value("").unwrap(),
-                },
-            }
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_SIGNUP_FAILED)
         }
     }).await
 }
@@ -49,13 +37,7 @@ pub async fn login(login: LoginDTO, db: PostgresDbConn) -> ResponseWithStatus {
                 },
             }
         } else {
-            ResponseWithStatus {
-                status_code: Status::BadRequest.code,
-                response: Response {
-                    message: String::from(constants::MESSAGE_LOGIN_FAILED),
-                    data: serde_json::to_value("").unwrap(),
-                },
-            }
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_LOGIN_FAILED)
         }
     }).await
 }
