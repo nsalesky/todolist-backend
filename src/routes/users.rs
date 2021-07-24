@@ -40,6 +40,17 @@ pub async fn login(login: Json<LoginDTO>, db: PostgresDbConn) -> status::Custom<
     )
 }
 
+/// A route to get a user's basic information.
+#[get("/users")]
+pub async fn get_user(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = account_service::get_user(token.username, db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}
+
 /// A route to update a user's preferred name to the new value in `preferred_name`.
 #[put("/users/name", format = "json", data = "<preferred_name>")]
 pub async fn put_preferred_name(preferred_name: Json<UpdatePreferredName>, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
@@ -59,18 +70,5 @@ pub async fn put_password(password: Json<UpdatePassword>, token: UserToken, db: 
     status::Custom(
         Status::from_code(response.status_code).unwrap(),
         Json(response.response)
-    )
-}
-
-// todo: remove this route
-/// A DEBUG route to test logging in a user with their authentication token.
-/// For now, returns all of the user's information in the response if the token is valid.
-#[get("/users")]
-pub async fn get_user(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
-    let response = account_service::get_user(token.username, db).await;
-
-    status::Custom(
-        Status::from_code(response.status_code).unwrap(),
-        Json(response.response),
     )
 }

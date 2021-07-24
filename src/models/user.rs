@@ -55,6 +55,14 @@ pub struct LoginInfoDTO {
     pub username: String,
 }
 
+/// All of the user information that can be safely shown to the user.
+#[derive(Serialize, Deserialize)]
+pub struct UserInformation {
+    pub username: String,
+    pub email: String,
+    pub preferred_name: String,
+}
+
 // I'm not sure if JSON objects are necessary/good for these update objects, but I'll go with them
 // for now until I learn better
 
