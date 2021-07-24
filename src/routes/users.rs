@@ -11,7 +11,7 @@ use crate::auth::UserToken;
 use crate::constants;
 use crate::database::PostgresDbConn;
 use crate::models::response::{Response, ResponseWithStatus};
-use crate::models::user::{LoginDTO, User, UserDTO, UpdatePreferredName, UpdatePassword};
+use crate::models::user::{LoginDTO, UpdatePassword, UpdatePreferredName, User, UserDTO};
 use crate::schema::users;
 use crate::services::account_service;
 
@@ -58,7 +58,7 @@ pub async fn put_preferred_name(preferred_name: Json<UpdatePreferredName>, token
 
     status::Custom(
         Status::from_code(response.status_code).unwrap(),
-        Json(response.response)
+        Json(response.response),
     )
 }
 
@@ -69,6 +69,6 @@ pub async fn put_password(password: Json<UpdatePassword>, token: UserToken, db: 
 
     status::Custom(
         Status::from_code(response.status_code).unwrap(),
-        Json(response.response)
+        Json(response.response),
     )
 }

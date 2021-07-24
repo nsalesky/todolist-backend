@@ -5,7 +5,7 @@ use crate::auth;
 use crate::constants;
 use crate::database::PostgresDbConn;
 use crate::models::response::{Response, ResponseWithStatus};
-use crate::models::user::{LoginDTO, User, UserDTO, UpdatePreferredName, UpdatePassword, UserInformation};
+use crate::models::user::{LoginDTO, UpdatePassword, UpdatePreferredName, User, UserDTO, UserInformation};
 
 /// Attempts to signup a new user with the specified user information.
 /// If successful, informs the user that the account has been created successfully.

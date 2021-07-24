@@ -76,7 +76,7 @@ impl Item {
             .set((
                 items::description.eq(new_item.description),
                 items::finished.eq(new_item.finished),
-                ))
+            ))
             .execute(conn)
             .is_ok()
     }
