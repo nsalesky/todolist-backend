@@ -24,6 +24,18 @@ pub async fn create_list(new_list: Json<ListDTO>, token: UserToken, db: Postgres
     )
 }
 
+/// Attempts to add an item to an existing list.
+#[post("/lists/<list_id>/add", format = "json", data = "<new_item>")]
+pub async fn post_item(list_id: i32, new_item: Json<ItemDTO>, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response =
+        list_service::add_item_to_list(list_id, token.id, new_item.into_inner(), db).await;
+
+    status::Custom(
+        Status::from_code(response.status_code).unwrap(),
+        Json(response.response),
+    )
+}
+
 /// Attempts to get the lists that the logged-in user can access.
 #[get("/lists")]
 pub async fn get_lists(token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
@@ -57,11 +69,10 @@ pub async fn put_list(list_id: i32, new_list: Json<ListDTO>, token: UserToken, d
     )
 }
 
-/// Attempts to add an item to an existing list.
-#[post("/lists/<list_id>/add", format = "json", data = "<new_item>")]
-pub async fn post_item(list_id: i32, new_item: Json<ItemDTO>, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
-    let response =
-        list_service::add_item_to_list(list_id, token.id, new_item.into_inner(), db).await;
+/// Attempts to update the specified item with the new values.
+#[put("/lists/<list_id>/<item_id>", format = "json", data = "<new_item>")]
+pub async fn put_item(list_id: i32, item_id: i32, new_item: Json<ItemDTO>, token: UserToken, db: PostgresDbConn) -> status::Custom<Json<Response>> {
+    let response = list_service::put_item_for_list(list_id, token.id, item_id, new_item.into_inner(), db).await;
 
     status::Custom(
         Status::from_code(response.status_code).unwrap(),

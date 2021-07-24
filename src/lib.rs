@@ -33,6 +33,7 @@ pub fn rocket() -> rocket::Rocket<Build> {
             routes::lists::get_lists,
             routes::lists::get_list,
             routes::lists::put_list,
+            routes::lists::put_item,
             routes::lists::delete_list,
             routes::lists::post_item,
             routes::lists::delete_item,

@@ -107,6 +107,26 @@ pub async fn put_list(list_id: i32, user_id: i32, new_list: ListDTO, db: Postgre
     }).await
 }
 
+/// Attempts to update the item with `item_id` with the new values in `new_item`, as long as that item is in a list with id
+/// `list_id` able to be accessed by the user with `user_id`.
+pub async fn put_item_for_list(list_id: i32, user_id: i32, item_id: i32, new_item: ItemDTO, db: PostgresDbConn) -> ResponseWithStatus {
+    db.run(move |conn| {
+        if !UserList::has_list_access(list_id, user_id, conn) {
+            return ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_NO_ACCESS);
+        }
+
+        if !Item::owned_by_list(item_id, list_id, conn) {
+            return ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_ITEM_NOT_OWNED_BY_LIST);
+        }
+
+        if Item::update_item(item_id, new_item, conn) {
+            ResponseWithStatus::with(Status::Ok.code, constants::MESSAGE_UPDATE_ITEM_SUCCESS)
+        } else {
+            ResponseWithStatus::with(Status::BadRequest.code, constants::MESSAGE_UPDATE_ITEM_FAILED)
+        }
+    }).await
+}
+
 /// Attempts to delete the list with the given `list_id`. Makes sure that the user with `user_id`
 /// owns the list before deleting it. Also, through cascading, deletes any `UserList` or `Item`s
 /// related to the list.

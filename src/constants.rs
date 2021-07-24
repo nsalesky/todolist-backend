@@ -34,3 +34,8 @@ pub const MESSAGE_GET_LIST_FAILED: &str = "error when getting list, please try a
 
 pub const MESSAGE_UPDATE_LIST_SUCCESS: &str = "updated list successfully";
 pub const MESSAGE_UPDATE_LIST_FAILED: &str = "error when updating list, please try again";
+
+pub const MESSAGE_UPDATE_ITEM_SUCCESS: &str = "updated item successfully";
+pub const MESSAGE_UPDATE_ITEM_FAILED: &str = "error when updating item, please try again";
+
+pub const MESSAGE_ITEM_NOT_OWNED_BY_LIST: &str = "error, item not owned by the specified list";

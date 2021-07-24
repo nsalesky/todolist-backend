@@ -46,14 +46,6 @@ impl Item {
             .is_ok()
     }
 
-    /// Attempts to delete the item with the given `id`. Returns true if successful or
-    /// false otherwise.
-    pub fn delete_item(id: i32, conn: &PgConnection) -> bool {
-        diesel::delete(dsl::items.filter(dsl::item_id.eq(id)))
-            .execute(conn)
-            .is_ok()
-    }
-
     /// Determines whether or not the given item is contained in the given list.
     pub fn owned_by_list(item_id: i32, list_id: i32, conn: &PgConnection) -> bool {
         let possible_item = dsl::items.filter(dsl::item_id.eq(item_id)).get_result::<Item>(conn);
@@ -75,6 +67,26 @@ impl Item {
             Ok(result_items) => result_items,
             Err(_) => vec![],
         }
+    }
+
+    /// Attempts to update the item with the given `id` to the values in `new_item`.
+    /// Returns true if successful or false otherwise.
+    pub fn update_item(id: i32, new_item: ItemDTO, conn: &PgConnection) -> bool {
+        diesel::update(items::table.filter(items::item_id.eq(id)))
+            .set((
+                items::description.eq(new_item.description),
+                items::finished.eq(new_item.finished),
+                ))
+            .execute(conn)
+            .is_ok()
+    }
+
+    /// Attempts to delete the item with the given `id`. Returns true if successful or
+    /// false otherwise.
+    pub fn delete_item(id: i32, conn: &PgConnection) -> bool {
+        diesel::delete(dsl::items.filter(dsl::item_id.eq(id)))
+            .execute(conn)
+            .is_ok()
     }
 
     // pub fn find_item_by_id(id: i32, conn: &PgConnection) -> Option<Item> {
