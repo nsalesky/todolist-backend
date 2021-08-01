@@ -3,7 +3,7 @@
 
 **Description**
 ---------------
-This is the backend API for a todo-list application where users can create an account, and store lists accessible from any device (through a frontend implementation). Additionally, lists can be shared with other users either by username or email, and then they will have the ability to edit those lists, although only list "owners" can delete lists entirely. In order to even start this project, I had to learn about Rocket, the framework I decided to use. I had many problems in my first few days working on this project, mostly down to my inexperience and the sparsity of documentation for issues I came across (although the Rocket documentation is pretty great). In the end, I elarned about API's, databases, asynchronous programming, and HTTP requests/responses throughout this project.
+This is the backend API for a todo-list application where users can create an account, and store lists accessible from any device (through a frontend implementation). Additionally, lists can be shared with other users either by username or email, and then they will have the ability to edit those lists, although only list "owners" can delete lists entirely. In order to even start this project, I had to learn about Rocket, the framework I decided to use. I had many problems in my first few days working on this project, mostly down to my inexperience and the sparsity of documentation for issues I came across (although the Rocket documentation is pretty great). In the end, I learned about API's, databases, asynchronous programming, and HTTP requests/responses throughout this project.
 
 
 **Usage**
