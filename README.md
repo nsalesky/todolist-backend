@@ -11,7 +11,7 @@ In order to run this backend, you will need to create a secret.key file in the s
 
 **Future Expansion/Things Left to Do**
 --------------------------------------
-Here is my to-do list (ironic enough) of things I still need to do/implement, or features I'd like to add:
+Here is my to-do list (ironically) of things I still need to do/implement, or features I'd like to add:
 1. A POST route to share a list with another user, although the basic infrastructure is already in place.
 2. Finalize my route links and document them below with sample JSON request data.
 
